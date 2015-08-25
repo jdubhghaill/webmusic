@@ -1,0 +1,2 @@
+webmusic = angular.module('webmusic',[
+])
