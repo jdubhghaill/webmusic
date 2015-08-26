@@ -4,6 +4,14 @@ Rails.application.routes.draw do
 
   root 'home#index'
 
+  namespace :api, defaults: {format: :json} do
+    resources :tracks do
+      member do
+        get 'data'
+      end
+    end
+  end
+
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
 
