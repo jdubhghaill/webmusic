@@ -1,7 +1,7 @@
 module Api
   class  TracksController < Api::BaseController
     def data
-	send_file '/protected/mirah - 01 - cold cold water.ogg'
+	send_file '/home/sean/Music/mirah - 01 - cold cold water.ogg'
     end
 
     private
