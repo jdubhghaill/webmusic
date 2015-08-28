@@ -25,7 +25,7 @@ module Api
 	response.headers['Cache-Control'] = 'public, must-revalidate, max-age=0'
 	response.headers['Pragma'] = 'no-cache'
 	response.headers['X-Accel-Buffering'] = 'no'
-	response.headers['X-Accel-Redirect'] = '/home/sean/Music/mirah - 01 - cold cold water.ogg'
+	response.headers['X-Accel-Redirect'] = '/protected/mirah - 01 - cold cold water.ogg'
 
 
 	#send_file '/home/sean/Music/mirah - 01 - cold cold water.ogg', :disposition => "inline", :type => "audio/ogg", :status => status_code
