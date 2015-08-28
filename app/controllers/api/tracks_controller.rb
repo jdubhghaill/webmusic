@@ -2,9 +2,11 @@ module Api
   class  TracksController < Api::BaseController
     def data
         response.headers['X-Content-Duration'] = '311'
-        response.headers['Content-Type'] = 'audio/ogg'
+#        response.headers['Content-Type'] = 'audio/ogg'
         response.headers['Accept-Ranges'] = 'bytes'
-	send_file '/home/sean/Music/mirah - 01 - cold cold water.ogg'
+	response.header['Cache-Control'] = 'public, must-revalidate, max-age=0'
+	response.header['Pragma'] = 'no-cache'
+	send_file '/home/sean/Music/mirah - 01 - cold cold water.ogg', :disposition => "inline", :type => "audio/ogg"
     end
 
     private
