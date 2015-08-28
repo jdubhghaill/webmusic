@@ -19,11 +19,13 @@ module Api
 	response.header["Content-Length"] = (file_end.to_i - file_begin.to_i + 1).to_s
 
 
+        response.headers['Content-Duration'] = '311'
         response.headers['X-Content-Duration'] = '311'
-#        response.headers['Content-Type'] = 'audio/ogg'
         response.headers['Accept-Ranges'] = 'bytes'
 	response.header['Cache-Control'] = 'public, must-revalidate, max-age=0'
 	response.header['Pragma'] = 'no-cache'
+	response.header['X-Accel-Buffering'] = 'no'
+
 	send_file '/home/sean/Music/mirah - 01 - cold cold water.ogg', :disposition => "inline", :type => "audio/ogg", :status => status_code
     end
 
