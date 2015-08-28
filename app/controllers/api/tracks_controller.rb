@@ -22,11 +22,14 @@ module Api
         response.headers['Content-Duration'] = '311'
         response.headers['X-Content-Duration'] = '311'
         response.headers['Accept-Ranges'] = 'bytes'
-	response.header['Cache-Control'] = 'public, must-revalidate, max-age=0'
-	response.header['Pragma'] = 'no-cache'
-	response.header['X-Accel-Buffering'] = 'no'
+	response.headers['Cache-Control'] = 'public, must-revalidate, max-age=0'
+	response.headers['Pragma'] = 'no-cache'
+	response.headers['X-Accel-Buffering'] = 'no'
+	response.headers['X-Accel-Redirect'] = '/home/sean/Music/mirah - 01 - cold cold water.ogg'
 
-	send_file '/home/sean/Music/mirah - 01 - cold cold water.ogg', :disposition => "inline", :type => "audio/ogg", :status => status_code
+
+	#send_file '/home/sean/Music/mirah - 01 - cold cold water.ogg', :disposition => "inline", :type => "audio/ogg", :status => status_code
+	render :nothing => true
     end
 
     private
