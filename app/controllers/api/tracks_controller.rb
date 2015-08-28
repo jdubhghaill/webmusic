@@ -5,7 +5,7 @@ module Api
 	file_size = 6836450 
 	file_end = file_size - 1
 
-	response.header["Content-Length"] = (file_end.to_i - file_begin.to_i + 1).to_s
+	#response.header["Content-Length"] = (file_end.to_i - file_begin.to_i + 1).to_s
 
 
 #        response.headers['Content-Duration'] = '311'
