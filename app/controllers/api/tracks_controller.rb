@@ -5,30 +5,18 @@ module Api
 	file_size = 6836450 
 	file_end = file_size - 1
 
-	if !request.headers["Range"]
-	  status_code = "200 OK"
-	else
-	  status_code = "206 Partial Content"
-	  match = request.headers['range'].match(/bytes=(\d+)-(\d*)/)
-	  if match
-	    file_begin = match[1]
-	    file_end = match[1] if match[2] && !match[2].empty?
-	  end
-	  response.header["Content-Range"] = "bytes " + file_begin.to_s + "-" + file_end.to_s + "/" + file_size.to_s
-	end
 	response.header["Content-Length"] = (file_end.to_i - file_begin.to_i + 1).to_s
 
 
-        response.headers['Content-Duration'] = '311'
-        response.headers['X-Content-Duration'] = '311'
-        response.headers['Accept-Ranges'] = 'bytes'
+#        response.headers['Content-Duration'] = '311'
+#        response.headers['X-Content-Duration'] = '311'
+#        response.headers['Accept-Ranges'] = 'bytes'
 	response.headers['Cache-Control'] = 'public, must-revalidate, max-age=0'
-	response.headers['Pragma'] = 'no-cache'
+#	response.headers['Pragma'] = 'no-cache'
 	response.headers['X-Accel-Buffering'] = 'no'
+	response.headers['Content-Type'] = 'audio/ogg'
 	response.headers['X-Accel-Redirect'] = '/protected/mirah - 01 - cold cold water.ogg'
 
-
-	#send_file '/home/sean/Music/mirah - 01 - cold cold water.ogg', :disposition => "inline", :type => "audio/ogg", :status => status_code
 	render :nothing => true
     end
 
