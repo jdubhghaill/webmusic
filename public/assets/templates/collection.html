@@ -1,0 +1,14 @@
+<div class="collections-page col-md-12">
+  <div class="collection">
+    <h2>Collection</h2>
+    <p>Path: {{collection.path}}</p>
+    <p>{{collection.track_count}} tracks</p>
+
+    <h3>Errors</h3>
+    <ul>
+      <li ng-repeat="error in collection.collection_errors"><a ng-href="/collection-errors/{{error.id}}">{{error.path}}</a></li>
+    </ul>
+  </div>
+</div>
+
+

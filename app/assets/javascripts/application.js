@@ -13,4 +13,9 @@
 //= require jquery
 //= require jquery_ujs
 //= require angular/angular
+//= require angular-route/angular-route
+//= require angular-resource/angular-resource
+//= require ngInfiniteScroll
+//= require angular-animate
+//= require angular-bootstrap
 //= require_tree .

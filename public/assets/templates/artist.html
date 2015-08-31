@@ -1,0 +1,50 @@
+<div class="artist-page">
+  <span ng-show="!artist"><h4>You currently have no artist selected</h4></span>
+
+  <div ng-show="artist">
+    <h4>{{artist.name}}</h4>
+
+      <button class="btn" ng-click="load()"><span class="glyphicon glyphicon-play"></span> Play All</button>
+      <button class="btn" ng-click="queue()"><span class="glyphicon glyphicon-plus"></span> Queue All</button>
+
+    <div class="albums row" ng-if="artist.albums.length > 0">
+      <h5 ng-if="artist.id != 0">Albums</h5>
+      <div class="col-md-2 albums-item" ng-repeat="album in artist.albums">
+        <div class="thumbnail album-thumbnail" ng-click="openAlbum(album.id)">
+          <img class="album-placeholder" ng-if="!album.has_image" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+DQo8c3ZnIGlkPSJzdmcyOTg1IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMTIwIiB3aWR0aD0iMTIwIiB2ZXJzaW9uPSIxLjEiPg0KPGcgaWQ9ImxheWVyMSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCw1NikiPg0KPHJlY3QgaWQ9InJlY3QzMDk3IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwLC01NikiIGhlaWdodD0iMTIwIiB3aWR0aD0iMTIwIiB5PSIwIiB4PSIwIiBmaWxsPSIjRUVFIi8+DQo8cGF0aCBpZD0icGF0aDI5OTciIGQ9Im02MS41MjEsODcuOTcyYTExLjk4MiwxMS41MjEsMCwxLDEsLTIzLjk2MywwLDExLjk4MiwxMS41MjEsMCwxLDEsMjMuOTYzLDB6IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg2LjA0MzY3NDMsLTY5LjExNzU4NSkiIGZpbGw9IiNDQ0MiLz4NCjxyZWN0IGlkPSJyZWN0Mjk5OSIgaGVpZ2h0PSI0OS43NyIgd2lkdGg9IjQuNjA4MyIgeT0iLTMxLjE0NSIgeD0iNjIuOTU2IiBmaWxsPSIjQ0NDIi8+DQo8cmVjdCBpZD0icmVjdDMwMDEiIHRyYW5zZm9ybT0ibWF0cml4KDAuOTgxNzE0NDYsMC4xOTAzNTk0NywtMC4xMDUwMjMwNiwwLjk5NDQ2OTc5LDAsMCkiIGhlaWdodD0iNC41ODcyIiB3aWR0aD0iMTguODYxIiB5PSItNDMuNTk5IiB4PSI2NC4xMzgiIGZpbGw9IiNDQ0MiLz4NCjwvZz4NCjwvc3ZnPg==">
+          <img class="album-image" ng-if="album.has_image" ng-src="/api/albums/{{album.id}}/image">
+          <div class="album-actions">
+            <button class="btn btn-link" ng-click="loadAlbum(album.id); $event.stopPropagation();"><span class="glyphicon glyphicon-play"></span></button>
+            <button class="btn btn-link" ng-click="queueAlbum(album.id); $event.stopPropagation();"><span class="glyphicon glyphicon-plus"></span></button>
+          </div>
+          <div class="caption album-caption">
+            <h5>
+              {{album.title}}
+            </h5>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="albums row" ng-if="artist.compilations.length > 0">
+      <h5>Compilations</h5>
+      <div class="col-md-2 albums-item" ng-repeat="album in artist.compilations">
+        <div class="thumbnail album-thumbnail" ng-click="openAlbum(album.id)">
+          <img class="album-placeholder" ng-if="!album.has_image" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+DQo8c3ZnIGlkPSJzdmcyOTg1IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMTIwIiB3aWR0aD0iMTIwIiB2ZXJzaW9uPSIxLjEiPg0KPGcgaWQ9ImxheWVyMSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCw1NikiPg0KPHJlY3QgaWQ9InJlY3QzMDk3IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwLC01NikiIGhlaWdodD0iMTIwIiB3aWR0aD0iMTIwIiB5PSIwIiB4PSIwIiBmaWxsPSIjRUVFIi8+DQo8cGF0aCBpZD0icGF0aDI5OTciIGQ9Im02MS41MjEsODcuOTcyYTExLjk4MiwxMS41MjEsMCwxLDEsLTIzLjk2MywwLDExLjk4MiwxMS41MjEsMCwxLDEsMjMuOTYzLDB6IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg2LjA0MzY3NDMsLTY5LjExNzU4NSkiIGZpbGw9IiNDQ0MiLz4NCjxyZWN0IGlkPSJyZWN0Mjk5OSIgaGVpZ2h0PSI0OS43NyIgd2lkdGg9IjQuNjA4MyIgeT0iLTMxLjE0NSIgeD0iNjIuOTU2IiBmaWxsPSIjQ0NDIi8+DQo8cmVjdCBpZD0icmVjdDMwMDEiIHRyYW5zZm9ybT0ibWF0cml4KDAuOTgxNzE0NDYsMC4xOTAzNTk0NywtMC4xMDUwMjMwNiwwLjk5NDQ2OTc5LDAsMCkiIGhlaWdodD0iNC41ODcyIiB3aWR0aD0iMTguODYxIiB5PSItNDMuNTk5IiB4PSI2NC4xMzgiIGZpbGw9IiNDQ0MiLz4NCjwvZz4NCjwvc3ZnPg==">
+          <img class="album-image" ng-if="album.has_image" ng-src="/api/albums/{{album.id}}/image">
+          <div class="album-actions">
+            <button class="btn btn-link" ng-click="loadAlbum(album.id); $event.stopPropagation();"><span class="glyphicon glyphicon-play"></span></button>
+            <button class="btn btn-link" ng-click="queueAlbum(album.id); $event.stopPropagation();"><span class="glyphicon glyphicon-plus"></span></button>
+          </div>
+          <div class="caption album-caption">
+            <h5>
+              {{album.title}}
+            </h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

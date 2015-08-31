@@ -1,19 +1,95 @@
-<div class="container-fluid" ng-app="webmusic">
-  <div class="panel panel-success">
-    <div class="panel-heading">
-      <h1 ng-if="name">Hello, {{name}}</h1>
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation" ng-controller="NavCtrl">
+  <div class="container-fluid">
+    <div class="navbar-fluid">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-content">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/"><span class="glyphicon glyphicon-headphones"></span></a>
     </div>
-    <div class="panel-body">
-      <form class="form-inline">
-        <div class="form-group">
-          <input class="form-control" type="text" placeholder="Enter your name" autofocus ng-model="name">
-        </div>
-      </form>
+    <div class="collapse navbar-collapse" id="navbar-content">
+      <ul class="nav navbar-nav">
+        <li ng-class="{active: isArtists()}"><a href="/artists">Artists</a></li>
+        <li ng-class="{active: isAlbums()}"><a href="/albums">Albums</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li ng-class="{active: isSettings()}"><a href="/collections">Settings</span></a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
 
-      <audio controls="controls">
-        Your browser does not support the <code>audio</code> element.
-        <source src="/api/tracks/1/data" type="audio/ogg">
-      </audio>
+<div class="content-container">
+  <div class="container-fluid">
+    <div class="row" ng-view>
+{{'yet' + '!'}}
     </div>
   </div>
 </div>
+
+<div class="alert-container" ng-controller="AlertCtrl">
+  <div class="alert alert-success" ng-repeat="alert in alerts">{{alert.message}}</div>
+</div>
+
+<nav class="navbar navbar-default navbar-fixed-bottom player-footer">
+  <div class="container-fluid" ng-controller="PlayerCtrl" ng-class="{paused: !audio.playing}" ng-click="gotoQueue()">
+    <audio media-player="audio" playlist="playlist"></audio>
+    <button class="btn" ng-click="audio.prev(); $event.stopPropagation();" ng-disabled="atFirst()">
+      <span class="glyphicon glyphicon-backward"></span>
+      <span class="sr-only">Previous</span>
+    </button>
+    <button class="btn" ng-click="audio.playPause(); $event.stopPropagation();" ng-disabled="playlist.length == 0">
+      <span ng-show="!audio.playing">
+        <span class="glyphicon glyphicon-play"></span>
+        <span class="sr-only">Play</span>
+      </span>
+      <span ng-show="audio.playing">
+        <span class="glyphicon glyphicon-pause"></span>
+        <span class="sr-only">Pause</span>
+      </span>
+    </button>
+    <button class="btn" ng-click="audio.next(); $event.stopPropagation();" ng-disabled="atLast()">
+      <span class="glyphicon glyphicon-forward"></span>
+      <span class="sr-only">Next</span>
+    </button>
+
+    <span class="current-track">
+      <img class="album-placeholder" ng-if="!audio.currentTrack" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+DQo8c3ZnIGlkPSJzdmcyOTg1IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMTIwIiB3aWR0aD0iMTIwIiB2ZXJzaW9uPSIxLjEiPg0KPGcgaWQ9ImxheWVyMSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCw1NikiPg0KPHJlY3QgaWQ9InJlY3QzMDk3IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwLC01NikiIGhlaWdodD0iMTIwIiB3aWR0aD0iMTIwIiB5PSIwIiB4PSIwIiBmaWxsPSIjRUVFIi8+DQo8cGF0aCBpZD0icGF0aDI5OTciIGQ9Im02MS41MjEsODcuOTcyYTExLjk4MiwxMS41MjEsMCwxLDEsLTIzLjk2MywwLDExLjk4MiwxMS41MjEsMCwxLDEsMjMuOTYzLDB6IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg2LjA0MzY3NDMsLTY5LjExNzU4NSkiIGZpbGw9IiNDQ0MiLz4NCjxyZWN0IGlkPSJyZWN0Mjk5OSIgaGVpZ2h0PSI0OS43NyIgd2lkdGg9IjQuNjA4MyIgeT0iLTMxLjE0NSIgeD0iNjIuOTU2IiBmaWxsPSIjQ0NDIi8+DQo8cmVjdCBpZD0icmVjdDMwMDEiIHRyYW5zZm9ybT0ibWF0cml4KDAuOTgxNzE0NDYsMC4xOTAzNTk0NywtMC4xMDUwMjMwNiwwLjk5NDQ2OTc5LDAsMCkiIGhlaWdodD0iNC41ODcyIiB3aWR0aD0iMTguODYxIiB5PSItNDMuNTk5IiB4PSI2NC4xMzgiIGZpbGw9IiNDQ0MiLz4NCjwvZz4NCjwvc3ZnPg==">
+      <img class="album-image" ng-src="/api/albums/{{playlist[audio.currentTrack - 1].album.id}}/image" ng-if="audio.currentTrack">
+      <span class="current-track-title">
+        <h5 ng-show="playlist.length == 0">
+          <span class="title">No tracks queued</span><br/>
+          <small class="artist">-</small>
+        </h5>
+        <h5 ng-show="playlist.length > 0">
+          <span class="title">{{playlist[audio.currentTrack - 1].title}}</span><br/>
+          <small class="artist">{{playlist[audio.currentTrack - 1].artist.name}}</small>
+        </h5>
+      </span>
+    </span>
+
+    <span class="track-progress">
+      <div class="progress">
+        <div class="progress-bar" role="progressbar" aria-valuenow="{{audio.formatTime}}" aria-valuemin="0" aria-valuemax="{{audio.formatDuration}}" ng-style="progress()">
+          <span class="sr-only">{{audio.formatTime}} / {{audio.formatDuration}}</span>
+        </div>
+      </div>
+    </span>
+
+    <span class="player-time" ng-show="!audio.formatTime">
+      00:00 / 00:00
+    </span>
+    <span class="player-time" ng-show="audio.formatTime">
+      {{audio.formatTime}} / {{audio.formatDuration}}
+    </span>
+
+    <span class="playlist-actions">
+      <button class="btn" ng-click="$event.stopPropagation();" ng-model="repeat" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
+        <span class="glyphicon glyphicon-repeat"></span>
+        <span class="sr-only">Repeat</span>
+      </button>
+    <span>
+  </div>
+</nav>

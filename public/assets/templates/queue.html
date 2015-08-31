@@ -1,0 +1,32 @@
+<div class="queue-page">
+  <div class="col-md-12">
+    <div class="queue-header">
+      <button class="btn" ng-click="back()">Back</button>
+      <h2>Now Playing</h2>
+      <a class="pull-right" ng-show="playlist.length > 0" ng-click="clear()">Clear</a>
+    </div>
+
+    <p ng-show="playlist.length == 0">There are no tracks queued for playing</p>
+    <div class="playlist-tracks">
+      <table class="table table-hover playlist-table">
+        <tbody>
+          <tr ng-repeat="track in playlist" ng-click="play($index)">
+            <td class="playlist-track-status">
+              <span class="glyphicon glyphicon-play" ng-show="($index + 1) == player.audio.currentTrack && player.audio.playing"></span>
+              <span class="glyphicon glyphicon-pause" ng-show="($index + 1) == player.audio.currentTrack && !player.audio.playing"></span>
+            </td>
+            <td class="playlist-index">{{$index + 1}}.</td>
+            <td>{{track.title}}</td>
+            <td>{{track.album.title}}</td>
+            <td>{{track.artist.name}}</td>
+            <td>{{track.duration}}</td>
+            <td class="playlist-actions">
+              <a ng-click="remove($index); $event.stopPropagation();"><span class="glyphicon glyphicon-remove"></a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+

@@ -1,3 +1,8 @@
 asset 'angular'
+asset 'angular-route'
+asset 'angular-animate'
+asset 'angular-resource'
 asset 'bootstrap-sass-official'
+asset 'angular-bootstrap'
+asset 'ngInfiniteScroll'
 # vim: ft=ruby

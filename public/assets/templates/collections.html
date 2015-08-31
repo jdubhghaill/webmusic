@@ -1,0 +1,33 @@
+<div class="collections-page col-md-12">
+  <form ng-submit="create()" role="form">
+    <h2>Add Collection</h2>
+    <div class="form-group">
+      <label for="collection_path">Collection Path</label>
+      <input class="form-control" id="collection_path" type="text" ng-model="input_location" placeholder="Enter a path to be scanned for audio" />
+    </div>
+    <button class="btn" type="submit">Scan</button>
+  </form>
+
+  <div class="collections">
+    <h2>Collections</h2>
+    <table class="table table-hover">
+      <tbody>
+        <tr ng-class="{danger: !collection.exists, info: collection.scanning}" ng-repeat="collection in collections" ng-click="openCollection(collection.id)">
+          <td>
+            <span ng-show="!collection.exists">
+              <span class="glyphicon glyphicon-warning-sign"></span> Path does not exist
+            </span>
+            <span ng-show="collection.scanning">
+              <span class="glyphicon glyphicon-refresh sync-icon"></span> Scanning collection
+            </span>
+          </td>
+          <td>{{collection.path}}</td>
+          <td>{{collection.track_count}} tracks</td>
+          <td>{{collection.collection_errors.length}} errors</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+

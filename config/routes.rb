@@ -5,12 +5,20 @@ Rails.application.routes.draw do
   root 'home#index'
 
   namespace :api, defaults: {format: :json} do
+    resources :collection_errors
+    resources :collections
+    resources :artists
+    resources :albums do
+      get :image
+    end
     resources :tracks do
       member do
         get 'data'
       end
     end
   end
+
+  get "*path" => 'home#index'
 
   # You can have the root of your site routed with "root"
   # root 'welcome#index'

@@ -11,27 +11,92 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150826052618) do
+ActiveRecord::Schema.define(version: 20150831051104) do
+
+  create_table "albums", force: :cascade do |t|
+    t.string   "title"
+    t.integer  "artist_id"
+    t.string   "artist_name"
+    t.integer  "year"
+    t.string   "genre"
+    t.binary   "image"
+    t.string   "image_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "albums", ["artist_id"], name: "index_albums_on_artist_id"
+  add_index "albums", ["title"], name: "index_albums_on_title"
+
+  create_table "artists", force: :cascade do |t|
+    t.string   "name"
+    t.binary   "image"
+    t.string   "sort"
+    t.integer  "album_count", default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "image_type"
+  end
+
+  add_index "artists", ["sort"], name: "index_artists_on_sort", unique: true
+
+  create_table "collection_errors", force: :cascade do |t|
+    t.string   "path"
+    t.string   "message"
+    t.integer  "collection_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "collection_errors", ["collection_id"], name: "index_collection_errors_on_collection_id"
+
+  create_table "collections", force: :cascade do |t|
+    t.string   "path"
+    t.string   "webserver_alias"
+    t.datetime "last_scan"
+    t.boolean  "exists"
+    t.boolean  "scanning"
+    t.integer  "track_count"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "discs", force: :cascade do |t|
+    t.integer  "number"
+    t.integer  "album_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "discs", ["album_id"], name: "index_discs_on_album_id"
 
   create_table "tracks", force: :cascade do |t|
     t.string   "title"
-    t.string   "artist"
     t.string   "compilation_artist"
-    t.string   "album"
     t.string   "genre"
     t.integer  "year"
     t.integer  "track_number"
     t.integer  "disc_number"
     t.string   "filename"
-    t.string   "location"
-    t.integer  "filesize"
-    t.integer  "duration"
-    t.datetime "imported_on"
     t.datetime "last_played"
     t.integer  "play_count"
-    t.string   "format"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
+    t.string   "path"
+    t.string   "album_title"
+    t.string   "artist_name"
+    t.integer  "album_id"
+    t.integer  "artist_id"
+    t.integer  "disc_id"
+    t.integer  "collection_id"
+    t.integer  "length"
+    t.string   "mimetype"
+    t.string   "location"
   end
+
+  add_index "tracks", ["album_id"], name: "index_tracks_on_album_id"
+  add_index "tracks", ["artist_id"], name: "index_tracks_on_artist_id"
+  add_index "tracks", ["collection_id"], name: "index_tracks_on_collection_id"
+  add_index "tracks", ["disc_id"], name: "index_tracks_on_disc_id"
 
 end
