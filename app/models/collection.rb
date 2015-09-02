@@ -184,6 +184,8 @@ private
         track.collection = self
         track.track_number = tag.track
         track.path = path
+        track.location = location
+        track.filename = filename
         track.genre = tag.genre.strip
         track.play_count = 0
         track.title = tag.title.strip

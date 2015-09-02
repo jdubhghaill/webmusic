@@ -33,8 +33,8 @@ app.config ['$routeProvider', '$locationProvider'
       controller : 'AlbumCtrl'
     }).otherwise({
       redirectTo: '/artists'
-    });
-    $locationProvider.html5Mode(true);
+    })
+    $locationProvider.html5Mode(true)
     return
 ]
 
@@ -57,16 +57,40 @@ app.service 'alertService', ['$timeout'
 app.service 'playerService', ['$resource', '$timeout', 'alertService'
   ($resource, $timeout, alertService) ->
     playlist = []
-    player = null
+    audioPlayer = null
 
-    getPlayer: ->
-      player
+    setAudioPlayer: (newAudioPlayer) ->
+      audioPlayer = newAudioPlayer
 
-    setPlayer: (p) ->
-      player = p
+    play: ->
+      audioPlayer.play()
+
+    playPause: ->
+      audioPlayer.playPause()
+
+    playing: ->
+      audioPlayer.playing()
+
+    isReady: ->
+      audioPlayer.isReady()
+
+    currentTime: ->
+      audioPlayer.currentTime()
+
+    totalTime: ->
+      audioPlayer.totalTime()
+
+    setTrack: (trackNumber) ->
+      audioPlayer.setTrack(trackNumber)
 
     getPlaylist: ->
       playlist
+
+    prev: ->
+      audioPlayer.prev()
+
+    next: ->
+      audioPlayer.next()
 
     add: (data) ->
       data = angular.fromJson(angular.toJson(data))
@@ -80,15 +104,12 @@ app.service 'playerService', ['$resource', '$timeout', 'alertService'
       this.add(tracks)
 
     load: (data, playIndex) ->
-      player.audio.stop()
       playlist.length = 0
       data = angular.fromJson(angular.toJson(data))
       angular.copy(data, playlist)
-      $timeout(
-        ->
-          player.audio.play(playIndex)
-        , 500
-      )
+      this.currentTrack = 0
+      this.setTrack(playIndex)
+      this.play()
 
     load_discs: (data, discIndex, playIndex) ->
       tracks = []
@@ -184,7 +205,6 @@ app.controller 'NavCtrl', ['$scope', '$location', '$timeout'
 app.controller 'QueueCtrl', ['$scope', '$window', 'playerService'
   ($scope, $window, playerService) ->
     $scope.realPlaylist = playerService.getPlaylist()
-    $scope.player = playerService.getPlayer()
     $scope.playlist = angular.copy($scope.realPlaylist)
 
     $scope.back = ->
@@ -199,7 +219,7 @@ app.controller 'QueueCtrl', ['$scope', '$window', 'playerService'
       $scope.realPlaylist.length = 0
 
     $scope.play = (index) ->
-      $scope.player.audio.play(index)
+      playerService.play(index)
 ]
 
 app.controller 'AlertCtrl', ['$scope', 'alertService'
@@ -207,43 +227,27 @@ app.controller 'AlertCtrl', ['$scope', 'alertService'
     $scope.alerts = alertService.getAlerts()
 ]
 
-app.controller 'PlayerCtrl', ['$scope', '$location', 'playerService', '$timeout'
-  ($scope, $location, playerService, $timeout) ->
+app.controller 'PlayerCtrl', ['$scope', '$location', 'playerService', '$timeout', '$sce'
+  ($scope, $location, playerService, $timeout, $sce) ->
     $scope.audio = null
     $scope.playlist = playerService.getPlaylist()
-    $scope.repeat = false
-    playerService.setPlayer($scope)
+    $scope.service = playerService
 
     $scope.gotoQueue = ->
       $location.path("/queue")
 
-    $scope.percent = ->
-      if !$scope.audio || !$scope.audio.formatTime
-        return 0
-      ($scope.audio.currentTime / $scope.audio.duration) * 100
-
-    $scope.progress = ->
-      {width: "#{$scope.percent()}%"}
-
     $scope.play = ->
-      $scope.audio.play()
+      playerService.play()
 
     $scope.atFirst = ->
-      if $scope.playlist.length == 0 || $scope.audio.currentTrack == 1
+      if $scope.playlist.length == 0 || playerService.currentTrack == 0
         return true
       false
 
     $scope.atLast = ->
-      if $scope.playlist.length == 0 || $scope.audio.currentTrack == $scope.playlist.length
+      if $scope.playlist.length == 0 || playerService.currentTrack == $scope.playlist.length - 1
         return true
       false
-
-    $timeout( ->
-      $scope.audio.on('ended', (event) ->
-        if $scope.repeat and $scope.audio.ended
-          $scope.audio.play(0)
-      )
-    )
 ]
 
 app.controller 'CollectionErrorCtrl', ['$scope', '$routeParams', 'CollectionErrorService'
@@ -400,7 +404,7 @@ app.directive "artistScroll", ['$timeout'
         if value
           $timeout( ->
             w = $(window).height() / 2
-            $("#artistsNav").scrollTop($("#artistsNav").scrollTop() + $("#artistsNav .active").position().top - w);
+            $("#artistsNav").scrollTop($("#artistsNav").scrollTop() + $("#artistsNav .active").position().top - w)
           , 0)
       )
 ]
@@ -410,5 +414,102 @@ app.directive "artistDetails", () ->
   controller: ['$scope'
     ($scope) ->
   ]
-
   templateUrl: "/assets/templates/artist.html"
+
+app.directive "audioPlayer", () ->
+  restrict: "E"
+  transclude: true
+  templateUrl: "/assets/templates/player.html"
+  scope:
+    mediaSource: '='
+  controller: ['$scope', 'playerService'
+    ($scope, playerService) ->
+      $scope.playlist = playerService.getPlaylist()
+      $scope.audio = null
+      $scope.currentTrack = null
+      $scope.repeat = false
+
+      playerService.setAudioPlayer($scope)
+
+      $scope.setAudio = (newAudio) ->
+        $scope.audio = newAudio
+
+      $scope.gotoQueue = ->
+        $location.path("/queue")
+
+      $scope.play = ->
+        $scope.audio[0].play()
+
+      $scope.playPause = ->
+        if $scope.playing
+          $scope.audio[0].pause()
+        else
+          $scope.audio[0].play()
+
+      $scope.playing = ->
+        if $scope.audio[0].paused
+          return false
+        return true
+
+      $scope.isReady = ->
+        if $scope.playlist.length > 0
+          return true
+        false
+
+      $scope.currentTime = ->
+        $scope.audio[0].currentTime
+
+      $scope.totalTime = ->
+        $scope.audio[0].duration
+
+      $scope.mediaCompleted = ->
+        console.log "completed"
+        if $scope.currentTrack = $scope.playlist.length - 1
+          setTrack(0)
+          if repeat
+            $scope.play()
+        else
+          setTrack(currentTrack + 1)
+          $scope.play()
+
+      $scope.setTrack = (trackNumber) ->
+        if trackNumber >= 0 && trackNumber < $scope.playlist.length
+          track = $scope.playlist[trackNumber]
+          $scope.currentTrack = trackNumber
+          mediaSource =
+            src: track.src
+            type: track.type
+          $scope.changeSource(mediaSource)
+
+      $scope.getPlaylist = ->
+        $scope.playlist
+
+      $scope.prev = ->
+        setTrack($scope.currentTrack - 1)
+        $scope.play()
+
+      $scope.next = ->
+        setTrack($scope.currentTrack + 1)
+        $scope.play()
+
+      $scope.atFirst = ->
+        if $scope.playlist.length == 0 || $scope.currentTrack == 0
+          return true
+        false
+
+      $scope.atLast = ->
+        if $scope.playlist.length == 0 || $scope.currentTrack == $scope.playlist.length - 1
+          return true
+        false
+  ]
+  controllerAs: 'playerCtrl'
+  link: (scope, element, attrs, playerCtrl) ->
+    mediaElement = $(element).find('.audio')
+    scope.setAudio(mediaElement)
+
+    mediaElement.bind("ended", scope.mediaCompleted)
+
+    scope.changeSource = (value) ->
+      if value && value.src
+        mediaElement.attr("src", value.src)
+        mediaElement.attr("type", value.type)

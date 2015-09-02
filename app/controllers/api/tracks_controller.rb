@@ -1,12 +1,13 @@
 module Api
   class  TracksController < Api::BaseController
     def data
-	response.headers['Content-Type'] = 'audio/ogg'
-	response.headers['Cache-Control'] = 'public, must-revalidate, max-age=0'
-	response.headers['X-Accel-Buffering'] = 'no'
-	response.headers['X-Accel-Redirect'] = '/protected/mirah - 01 - cold cold water.ogg'
+      @track = Track.find(params[:id])
+	    response.headers['Content-Type'] = "audio/#{@track.mimetype}"
+	    response.headers['Cache-Control'] = 'public, must-revalidate, max-age=0'
+	    response.headers['X-Accel-Buffering'] = 'no'
+	    response.headers['X-Accel-Redirect'] = "/protected#{@track.location}"
 
-	render :nothing => true
+	    render :nothing => true
     end
 
     private

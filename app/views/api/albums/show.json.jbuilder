@@ -23,5 +23,13 @@ json.discs @album.discs do |disc|
     json.src           "/api/tracks/#{track.id}/data"
     json.track_number  track.track_number
     json.collection_id track.collection_id
+    json.artist do
+      json.id          track.artist_id
+      json.name        track.artist_name
+    end
+    json.album do
+      json.id          track.album_id
+      json.title       track.album_title
+    end
   end
 end

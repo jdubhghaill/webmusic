@@ -1,0 +1,56 @@
+<div class="container-fluid" ng-class="{paused: !playing()}" ng-click="gotoQueue()">
+  <audio class="audio"></audio>
+  <button class="btn" ng-click="prev(); $event.stopPropagation();" ng-disabled="atFirst()">
+    <span class="glyphicon glyphicon-backward"></span>
+    <span class="sr-only">Previous</span>
+  </button>
+  <button class="btn" ng-click="playPause(); $event.stopPropagation();" ng-disabled="playlist.length == 0">
+    <span ng-show="!playing()">
+      <span class="glyphicon glyphicon-play"></span>
+      <span class="sr-only">Play</span>
+    </span>
+    <span ng-show="playing()">
+      <span class="glyphicon glyphicon-pause"></span>
+      <span class="sr-only">Pause</span>
+    </span>
+  </button>
+  <button class="btn" ng-click="next(); $event.stopPropagation();" ng-disabled="atLast()">
+    <span class="glyphicon glyphicon-forward"></span>
+    <span class="sr-only">Next</span>
+  </button>
+  <span class="current-track">
+    <img class="album-placeholder" ng-show="!isReady()" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+DQo8c3ZnIGlkPSJzdmcyOTg1IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMTIwIiB3aWR0aD0iMTIwIiB2ZXJzaW9uPSIxLjEiPg0KPGcgaWQ9ImxheWVyMSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCw1NikiPg0KPHJlY3QgaWQ9InJlY3QzMDk3IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwLC01NikiIGhlaWdodD0iMTIwIiB3aWR0aD0iMTIwIiB5PSIwIiB4PSIwIiBmaWxsPSIjRUVFIi8+DQo8cGF0aCBpZD0icGF0aDI5OTciIGQ9Im02MS41MjEsODcuOTcyYTExLjk4MiwxMS41MjEsMCwxLDEsLTIzLjk2MywwLDExLjk4MiwxMS41MjEsMCwxLDEsMjMuOTYzLDB6IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg2LjA0MzY3NDMsLTY5LjExNzU4NSkiIGZpbGw9IiNDQ0MiLz4NCjxyZWN0IGlkPSJyZWN0Mjk5OSIgaGVpZ2h0PSI0OS43NyIgd2lkdGg9IjQuNjA4MyIgeT0iLTMxLjE0NSIgeD0iNjIuOTU2IiBmaWxsPSIjQ0NDIi8+DQo8cmVjdCBpZD0icmVjdDMwMDEiIHRyYW5zZm9ybT0ibWF0cml4KDAuOTgxNzE0NDYsMC4xOTAzNTk0NywtMC4xMDUwMjMwNiwwLjk5NDQ2OTc5LDAsMCkiIGhlaWdodD0iNC41ODcyIiB3aWR0aD0iMTguODYxIiB5PSItNDMuNTk5IiB4PSI2NC4xMzgiIGZpbGw9IiNDQ0MiLz4NCjwvZz4NCjwvc3ZnPg==">
+    <img class="album-image" ng-src="/api/albums/{{playlist[currentTrack].album.id}}/image" ng-show="isReady()">
+    <span class="current-track-title">
+      <h5 ng-show="playlist.length == 0">
+        <span class="title">No tracks queued</span><br/>
+        <small class="artist">-</small>
+      </h5>
+      <h5 ng-show="playlist.length > 0">
+        <span class="title">{{playlist[currentTrack].title}}</span><br/>
+        <small class="artist">{{playlist[currentTrack].artist.name}}</small>
+      </h5>
+    </span>
+  </span>
+
+  <span class="track-progress">
+    <div class="progress">
+      <div class="progress-bar" role="progressbar" aria-valuenow="{{currentTime}}" aria-valuemin="0" aria-valuemax="{{totalTime}}" ng-style="progress()">
+        <span class="sr-only">{{ currentTime | date:'mm:ss' }} / {{ totalTime | date:'mm:ss' }}</span>
+      </div>
+    </div>
+  </span>
+  <span class="player-time" ng-show="!isReady()">
+    00:00 / 00:00
+  </span>
+  <span class="player-time" ng-show="isReady()">
+    {{ currentTime | date:'mm:ss' }} / {{ totalTime | date:'mm:ss' }}
+  </span>
+
+  <span class="playlist-actions">
+    <button class="btn" ng-click="$event.stopPropagation();" ng-model="repeat" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
+      <span class="glyphicon glyphicon-repeat"></span>
+      <span class="sr-only">Repeat</span>
+    </button>
+  <span>
+</div>
