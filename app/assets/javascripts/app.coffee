@@ -454,10 +454,12 @@ app.directive "audioPlayer", () ->
         false
 
       $scope.currentTime = ->
-        $scope.audio[0].currentTime
+        if $scope.audio
+          $scope.audio[0].currentTime
 
       $scope.totalTime = ->
-        $scope.audio[0].duration
+        if $scope.audio
+          $scope.audio[0].duration
 
       $scope.mediaCompleted = ->
         console.log "completed"
