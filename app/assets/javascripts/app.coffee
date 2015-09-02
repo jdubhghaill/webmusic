@@ -419,8 +419,8 @@ app.directive "artistDetails", () ->
 app.directive "audioPlayer", () ->
   restrict: "E"
   templateUrl: "/assets/templates/player.html"
-  controller: ['$scope', 'playerService'
-    ($scope, playerService) ->
+  controller: ['$scope', '$location', 'playerService'
+    ($scope, $location, playerService) ->
       $scope.playlist = playerService.getPlaylist()
       $scope.audio = null
       $scope.currentTrack = null
@@ -438,7 +438,7 @@ app.directive "audioPlayer", () ->
         $scope.audio[0].play()
 
       $scope.playPause = ->
-        if $scope.playing
+        if $scope.playing()
           $scope.audio[0].pause()
         else
           $scope.audio[0].play()
