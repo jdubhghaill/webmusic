@@ -425,6 +425,9 @@ app.directive "audioPlayer", () ->
       $scope.audio = null
       $scope.currentTrack = null
       $scope.repeat = false
+      $scope.totalTime = 0
+      $scope.currentTime = 0
+
 
       playerService.setAudioPlayer($scope)
 
@@ -453,22 +456,20 @@ app.directive "audioPlayer", () ->
           return true
         false
 
-      $scope.currentTime = ->
-        if $scope.audio
-          $scope.audio[0].currentTime
+      $scope.timeUpdate = ->
+        $scope.currentTime = $scope.audio[0].currentTime
 
-      $scope.totalTime = ->
-        if $scope.audio
-          $scope.audio[0].duration
+      $scope.durationChange = ->
+        $scope.totalTime = $scope.audio[0].duration
 
       $scope.mediaCompleted = ->
         console.log "completed"
-        if $scope.currentTrack = $scope.playlist.length - 1
-          setTrack(0)
+        if $scope.currentTrack == $scope.playlist.length - 1
+          $scope.setTrack(0)
           if repeat
             $scope.play()
         else
-          setTrack(currentTrack + 1)
+          $scope.setTrack(currentTrack + 1)
           $scope.play()
 
       $scope.setTrack = (trackNumber) ->
@@ -484,11 +485,11 @@ app.directive "audioPlayer", () ->
         $scope.playlist
 
       $scope.prev = ->
-        setTrack($scope.currentTrack - 1)
+        $scope.setTrack($scope.currentTrack - 1)
         $scope.play()
 
       $scope.next = ->
-        setTrack($scope.currentTrack + 1)
+        $scope.setTrack($scope.currentTrack + 1)
         $scope.play()
 
       $scope.atFirst = ->
@@ -507,6 +508,8 @@ app.directive "audioPlayer", () ->
     scope.setAudio(mediaElement)
 
     mediaElement.bind("ended", scope.mediaCompleted)
+    mediaElement.bind("durationchange", scope.durationChange)
+    mediaElement.bind("timeupdate", scope.timeUpdate)
 
     scope.changeSource = (value) ->
       if value && value.src
