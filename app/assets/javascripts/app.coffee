@@ -457,15 +457,16 @@ app.directive "audioPlayer", () ->
         false
 
       $scope.timeUpdate = ->
-        $scope.currentTime = $scope.audio[0].currentTime
-        $scope.$apply()
+        $scope.apply(
+          $scope.currentTime = $scope.audio[0].currentTime
+        )
 
       $scope.durationChange = ->
-        $scope.totalTime = $scope.audio[0].duration
-        $scope.$apply()
+        $scope.apply(
+          $scope.totalTime = $scope.audio[0].duration
+        )
 
       $scope.mediaCompleted = ->
-        console.log "completed"
         if $scope.currentTrack == $scope.playlist.length - 1
           $scope.setTrack(0)
           if repeat
