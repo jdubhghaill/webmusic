@@ -418,10 +418,7 @@ app.directive "artistDetails", () ->
 
 app.directive "audioPlayer", () ->
   restrict: "E"
-  transclude: true
   templateUrl: "/assets/templates/player.html"
-  scope:
-    mediaSource: '='
   controller: ['$scope', 'playerService'
     ($scope, playerService) ->
       $scope.playlist = playerService.getPlaylist()
