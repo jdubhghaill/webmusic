@@ -45,8 +45,12 @@
   </span>
   <span class="player-time" ng-show="isReady()">
     {{ currentTime | date:'mm:ss' }} / {{ totalTime | date:'mm:ss' }}
+
+    CurrentTime {{currentTime}}
+
+    TotalTime {{totalTime}}
   </span>
-  {{currentTime}}
+
 
   <span class="playlist-actions">
     <button class="btn" ng-click="$event.stopPropagation();" ng-model="repeat" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">

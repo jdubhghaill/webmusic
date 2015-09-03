@@ -457,7 +457,6 @@ app.directive "audioPlayer", () ->
         false
 
       $scope.timeUpdate = ->
-        console.log $scope.audio[0].currentTime
         $scope.$apply(
           $scope.currentTime = $scope.audio[0].currentTime
         )
@@ -467,13 +466,21 @@ app.directive "audioPlayer", () ->
           $scope.totalTime = $scope.audio[0].duration
         )
 
+      $scope.percent = ->
+        if !$scope.isReady()
+          return 0
+        ($scope.currentTime / $scope.totalTime) * 100
+
+      $scope.progress = ->
+        {width: "#{$scope.percent()}%"}
+
       $scope.mediaCompleted = ->
         if $scope.currentTrack == $scope.playlist.length - 1
           $scope.setTrack(0)
           if repeat
             $scope.play()
         else
-          $scope.setTrack(currentTrack + 1)
+          $scope.setTrack($scope.currentTrack + 1)
           $scope.play()
 
       $scope.setTrack = (trackNumber) ->
@@ -512,7 +519,7 @@ app.directive "audioPlayer", () ->
     scope.setAudio(mediaElement)
 
     mediaElement.bind("ended", scope.mediaCompleted)
-    mediaElement.bind("durationchange", scope.durationChange)
+    mediaElement.addEventListener("durationchange", scope.durationChange.bind(this), false)
     mediaElement.bind("timeupdate", scope.timeUpdate)
 
     scope.changeSource = (value) ->
