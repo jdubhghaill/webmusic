@@ -81,7 +81,7 @@ app.service 'playerService', ['$resource', '$timeout', 'alertService'
       audioPlayer.totalTime()
 
     currentTrack: ->
-      audioPlayer
+      audioPlayer.getCurrentTrack()
 
     setTrack: (trackNumber) ->
       audioPlayer.setTrack(trackNumber)
@@ -447,14 +447,12 @@ app.directive "audioPlayer", () ->
         false
 
       $scope.timeUpdate = ->
-        $scope.$apply(
-          $scope.currentTime = $scope.audio[0].currentTime
-        )
+        $scope.currentTime = $scope.audio[0].currentTime
+        $scope.$apply()
 
       $scope.durationChange = ->
-        $scope.$apply(
-          $scope.totalTime = $scope.audio[0].duration
-        )
+        $scope.totalTime = $scope.audio[0].duration
+        $scope.$apply()
 
       $scope.percent = ->
         if !$scope.isReady()
