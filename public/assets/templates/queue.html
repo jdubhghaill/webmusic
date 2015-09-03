@@ -12,8 +12,8 @@
         <tbody>
           <tr ng-repeat="track in playlist" ng-click="play($index)">
             <td class="playlist-track-status">
-              <span class="glyphicon glyphicon-play" ng-show="($index + 1) == player.audio.currentTrack && player.audio.playing"></span>
-              <span class="glyphicon glyphicon-pause" ng-show="($index + 1) == player.audio.currentTrack && !player.audio.playing"></span>
+              <span class="glyphicon glyphicon-play" ng-show="($index) == currentTrack() && playing()"></span>
+              <span class="glyphicon glyphicon-pause" ng-show="($index) == currentTrack() && !playing()"></span>
             </td>
             <td class="playlist-index">{{$index + 1}}.</td>
             <td>{{track.title}}</td>
@@ -29,4 +29,3 @@
     </div>
   </div>
 </div>
-

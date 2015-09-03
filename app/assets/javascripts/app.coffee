@@ -80,6 +80,9 @@ app.service 'playerService', ['$resource', '$timeout', 'alertService'
     totalTime: ->
       audioPlayer.totalTime()
 
+    currentTrack: ->
+      audioPlayer
+
     setTrack: (trackNumber) ->
       audioPlayer.setTrack(trackNumber)
 
@@ -220,34 +223,17 @@ app.controller 'QueueCtrl', ['$scope', '$window', 'playerService'
 
     $scope.play = (index) ->
       playerService.play(index)
+
+    $scope.currentTrack = () ->
+      playerService.getCurrentTrack()
+
+    $scope.playing = () ->
+      playerService.playing()
 ]
 
 app.controller 'AlertCtrl', ['$scope', 'alertService'
   ($scope, alertService) ->
     $scope.alerts = alertService.getAlerts()
-]
-
-app.controller 'PlayerCtrl', ['$scope', '$location', 'playerService', '$timeout', '$sce'
-  ($scope, $location, playerService, $timeout, $sce) ->
-    $scope.audio = null
-    $scope.playlist = playerService.getPlaylist()
-    $scope.service = playerService
-
-    $scope.gotoQueue = ->
-      $location.path("/queue")
-
-    $scope.play = ->
-      playerService.play()
-
-    $scope.atFirst = ->
-      if $scope.playlist.length == 0 || playerService.currentTrack == 0
-        return true
-      false
-
-    $scope.atLast = ->
-      if $scope.playlist.length == 0 || playerService.currentTrack == $scope.playlist.length - 1
-        return true
-      false
 ]
 
 app.controller 'CollectionErrorCtrl', ['$scope', '$routeParams', 'CollectionErrorService'
@@ -516,6 +502,9 @@ app.directive "audioPlayer", () ->
         if $scope.playlist.length == 0 || $scope.currentTrack == $scope.playlist.length - 1
           return true
         false
+
+      $scope.getCurrentTrack = ->
+        $scope.currentTrack
   ]
   controllerAs: 'playerCtrl'
   link: (scope, element, attrs, playerCtrl) ->
