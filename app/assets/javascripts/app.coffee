@@ -519,7 +519,7 @@ app.directive "audioPlayer", () ->
     scope.setAudio(mediaElement)
 
     mediaElement.bind("ended", scope.mediaCompleted)
-    mediaElement.addEventListener("durationchange", scope.durationChange.bind(this), false)
+    mediaElement[0].addEventListener("durationchange", scope.durationChange.bind(this), false)
     mediaElement.bind("timeupdate", scope.timeUpdate)
 
     scope.changeSource = (value) ->
