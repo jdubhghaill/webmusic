@@ -80,7 +80,7 @@ app.service 'playerService', ['$resource', '$timeout', 'alertService'
     totalTime: ->
       audioPlayer.totalTime()
 
-    currentTrack: ->
+    getCurrentTrack: ->
       audioPlayer.getCurrentTrack()
 
     setTrack: (trackNumber) ->
