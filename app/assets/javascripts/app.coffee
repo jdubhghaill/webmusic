@@ -457,6 +457,7 @@ app.directive "audioPlayer", () ->
         false
 
       $scope.timeUpdate = ->
+        console.log $scope.audio[0].currentTime
         $scope.$apply(
           $scope.currentTime = $scope.audio[0].currentTime
         )
