@@ -36,7 +36,7 @@
   <span class="track-progress">
     <div class="progress">
       <div class="progress-bar" role="progressbar" aria-valuenow="{{currentTime}}" aria-valuemin="0" aria-valuemax="{{totalTime}}" ng-style="progress()">
-        <span class="sr-only">{{ currentTime | date:'mm:ss' }} / {{ totalTime | date:'mm:ss' }}</span>
+        <span class="sr-only">{{ currentTime | minute }} / {{ totalTime | minute }}</span>
       </div>
     </div>
   </span>
@@ -44,11 +44,7 @@
     00:00 / 00:00
   </span>
   <span class="player-time" ng-show="isReady()">
-    {{ currentTime | date:'mm:ss' }} / {{ totalTime | date:'mm:ss' }}
-
-    CurrentTime {{currentTime}}
-
-    TotalTime {{totalTime}}
+    {{ currentTime | minute }} / {{ totalTime | minute }}
   </span>
 
 

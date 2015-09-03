@@ -416,6 +416,11 @@ app.directive "artistDetails", () ->
   ]
   templateUrl: "/assets/templates/artist.html"
 
+app.filter "minute", () ->
+  (input) ->
+    min = input / 60
+    min.toFixed(2)
+
 app.directive "audioPlayer", () ->
   restrict: "E"
   templateUrl: "/assets/templates/player.html"
@@ -427,7 +432,6 @@ app.directive "audioPlayer", () ->
       $scope.repeat = false
       $scope.totalTime = 0
       $scope.currentTime = 0
-
 
       playerService.setAudioPlayer($scope)
 
