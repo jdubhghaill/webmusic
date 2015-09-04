@@ -18,4 +18,5 @@
 //= require ngInfiniteScroll
 //= require angular-animate
 //= require angular-bootstrap
+//= require angular-devise/lib/devise
 //= require_tree .

@@ -7,6 +7,7 @@
     "angular-resource": "latest",
     "bootstrap-sass-official": "latest",
     "angular-bootstrap": "latest",
-    "ngInfiniteScroll": "latest"
+    "ngInfiniteScroll": "latest",
+    "angular-devise": "latest"
   }
 }

@@ -5,4 +5,5 @@ asset 'angular-resource'
 asset 'bootstrap-sass-official'
 asset 'angular-bootstrap'
 asset 'ngInfiniteScroll'
+asset 'angular-devise'
 # vim: ft=ruby

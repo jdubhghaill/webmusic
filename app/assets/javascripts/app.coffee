@@ -1,38 +1,119 @@
-app = angular.module 'webmusic', ['ngRoute', 'ngResource', 'ngAnimate', 'infinite-scroll', 'ui.bootstrap']
+app = angular.module 'webmusic',
+  ['ngRoute',
+   'ngResource',
+   'ngAnimate',
+   'infinite-scroll',
+   'ui.bootstrap',
+   'Devise'
+  ]
 
 app.config ['$httpProvider'
   ($httpProvider) ->
-    authToken = $("meta[name=\"csrf-token\"]").attr("content")
-    $httpProvider.defaults.headers.common["X-CSRF-TOKEN"] = authToken
+    #authToken = $("meta[name=\"csrf-token\"]").attr("content")
+    #$httpProvider.defaults.headers.common["X-CSRF-TOKEN"] = authToken
     $httpProvider.defaults.headers.common["CONTENT_TYPE"] = "application/json"
+    $httpProvider.defaults.withCredentials = true;
 ]
 
 app.config ['$routeProvider', '$locationProvider'
   ($routeProvider, $locationProvider) ->
-    $routeProvider.when('/queue', {
+    $routeProvider.when('/sign_in', {
+      templateUrl : '/assets/templates/sign_in.html',
+      controller : 'UserCtrl'
+    }).when('/queue', {
       templateUrl : '/assets/templates/queue.html',
-      controller : 'QueueCtrl'
+      controller : 'QueueCtrl',
+      resolve:
+        auth: ['Auth', '$location',
+          (Auth, $location) ->
+            Auth.currentUser().then(
+              (user) ->
+
+            , (error) ->
+              $location.path('/sign_in');
+            )
+        ]
     }).when('/artists', {
       templateUrl : '/assets/templates/artists.html',
       controller : 'ArtistCtrl',
-      reloadOnSearch: false
+      reloadOnSearch: false,
+      resolve:
+        auth: ['Auth', '$location',
+          (Auth, $location) ->
+            Auth.currentUser().then(
+              (user) ->
+
+            , (error) ->
+              $location.path('/sign_in');
+            )
+        ]
     }).when('/albums', {
       templateUrl : '/assets/templates/albums.html',
-      controller : 'AlbumCtrl'
+      controller : 'AlbumCtrl',
+      resolve:
+        auth: ['Auth', '$location',
+          (Auth, $location) ->
+            Auth.currentUser().then(
+              (user) ->
+
+            , (error) ->
+              $location.path('/sign_in');
+            )
+        ]
     }).when('/collections', {
       templateUrl : '/assets/templates/collections.html',
-      controller : 'CollectionCtrl'
+      controller : 'CollectionCtrl',
+      resolve:
+        auth: ['Auth', '$location',
+          (Auth, $location) ->
+            Auth.currentUser().then(
+              (user) ->
+
+            , (error) ->
+              $location.path('/sign_in');
+            )
+        ]
     }).when('/collections/:id', {
       templateUrl : '/assets/templates/collection.html',
-      controller : 'CollectionCtrl'
+      controller : 'CollectionCtrl',
+      resolve:
+        auth: ['Auth', '$location',
+          (Auth, $location) ->
+            Auth.currentUser().then(
+              (user) ->
+
+            , (error) ->
+              $location.path('/sign_in');
+            )
+        ]
     }).when('/collection-errors/:id', {
       templateUrl : '/assets/templates/collection_error.html',
-      controller : 'CollectionErrorCtrl'
+      controller : 'CollectionErrorCtrl',
+      resolve:
+        auth: ['Auth', '$location',
+          (Auth, $location) ->
+            Auth.currentUser().then(
+              (user) ->
+
+            , (error) ->
+              $location.path('/sign_in');
+            )
+        ]
     }).when('/albums/:id', {
       templateUrl : '/assets/templates/album.html',
-      controller : 'AlbumCtrl'
+      controller : 'AlbumCtrl',
+      resolve:
+        auth: ['Auth', '$location',
+          (Auth, $location) ->
+            Auth.currentUser().then(
+              (user) ->
+
+            , (error) ->
+              $location.path('/sign_in');
+            )
+        ]
     }).otherwise({
-      redirectTo: '/artists'
+      redirectTo: '/sign_in'
     })
     $locationProvider.html5Mode(true)
     return
@@ -185,6 +266,35 @@ app.factory 'AlbumService', ['$resource'
 
       all: (offset) ->
         @service.query({offset: offset})
+]
+
+app.controller 'MainCtrl', ['$scope', '$location', 'Auth', 'alertService',
+  ($scope, $location, Auth, alertService) ->
+    $scope.isAuthenticated = () ->
+      Auth.isAuthenticated()
+
+    $scope.signOut = () ->
+      Auth.logout().then((oldUser) ->
+        $location.path("/sign_in")
+      , (error) ->
+        alertService.add("Error on logging out #{error}")
+      )
+]
+
+app.controller 'UserCtrl', ['$scope', '$location', 'Auth',
+  ($scope, $location, Auth) ->
+    config =
+      headers:
+        'X-HTTP-Method-Override': 'POST'
+
+    $scope.submitLogin  = (loginForm) ->
+      Auth.login(loginForm, config).then(
+        (user) ->
+          console.log(user)
+          $location.path('/artists')
+        , (error) ->
+          $scope.error = error
+      )
 ]
 
 app.controller 'NavCtrl', ['$scope', '$location', '$timeout'
@@ -465,7 +575,7 @@ app.directive "audioPlayer", () ->
       $scope.mediaCompleted = ->
         if $scope.currentTrack == $scope.playlist.length - 1
           $scope.setTrack(0)
-          if repeat
+          if $scope.repeat
             $scope.play()
         else
           $scope.setTrack($scope.currentTrack + 1)
@@ -517,3 +627,10 @@ app.directive "audioPlayer", () ->
       if value && value.src
         mediaElement.attr("src", value.src)
         mediaElement.attr("type", value.type)
+
+app.directive 'autofocus', ['$timeout', ($timeout) ->
+  restrict: 'A'
+  link : ($scope, $element) ->
+    $timeout () ->
+      $element[0].focus()
+]

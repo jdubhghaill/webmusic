@@ -40,6 +40,9 @@ gem 'capistrano-rvm', github: "capistrano/rvm"
 gem 'pg'
 gem 'taglib-ruby'
 
+gem 'devise'
+gem 'angular_rails_csrf'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'

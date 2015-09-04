@@ -1,30 +1,31 @@
 module Api
   class BaseController < ApplicationController
     protect_from_forgery with: :null_session
-    before_action :set_resource, only: [:destroy, :show, :update]
+    before_action :authenticate_user!
+    before_action :api_set_resource, only: [:destroy, :show, :update]
     respond_to :json
 
     # POST /api/{plural_resource_name}
     def create
-      set_resource(resource_class.new(resource_params))
+      api_set_resource(resource_class.new(resource_params))
 
-      if get_resource.save
+      if api_get_resource.save
         render :show, status: :created
       else
-        render json: get_resource.errors, status: :unprocessable_entity
+        render json: api_get_resource.errors, status: :unprocessable_entity
       end
     end
 
     # DELETE /api/{plural_resource_name}/1
     def destroy
-      get_resource.destroy
+      api_get_resource.destroy
       head :no_content
     end
 
     # GET /api/{plural_resource_name}
     def index
-      plural_resource_name = "@#{resource_name.pluralize}"
-      resources = resource_class.where(query_params)
+      plural_resource_name = "@#{api_resource_name.pluralize}"
+      resources = api_resource_class.where(query_params)
                                 .page(page_params[:page])
                                 .per(page_params[:page_size])
 
@@ -34,15 +35,15 @@ module Api
 
     # GET /api/{plural_resource_name}/1
     def show
-      respond_with get_resource
+      respond_with api_get_resource
     end
 
     # PATCH/PUT /api/{plural_resource_name}/1
     def update
-      if get_resource.update(resource_params)
+      if api_get_resource.update(resource_params)
         render :show
       else
-        render json: get_resource.errors, status: :unprocessable_entity
+        render json: api_get_resource.errors, status: :unprocessable_entity
       end
     end
 
@@ -50,8 +51,8 @@ module Api
 
       # Returns the resource from the created instance variable
       # @return [Object]
-      def get_resource
-        instance_variable_get("@#{resource_name}")
+      def api_get_resource
+        instance_variable_get("@#{api_resource_name}")
       end
 
       # Returns the allowed parameters for searching
@@ -69,13 +70,13 @@ module Api
       end
       # The resource class based on the controller
       # @return [Class]
-      def resource_class
-        @resource_class ||= resource_name.classify.constantize
+      def api_resource_class
+        @resource_class ||= api_resource_name.classify.constantize
       end
 
       # The singular name for the resource class based on the controller
       # @return [String]
-      def resource_name
+      def api_resource_name
         @resource_name ||= self.controller_name.singularize
       end
 
@@ -85,13 +86,13 @@ module Api
       # the method "#{resource_name}_params" to limit permitted
       # parameters for the individual model.
       def resource_params
-        @resource_params ||= self.send("#{resource_name}_params")
+        @resource_params ||= self.send("#{api_resource_name}_params")
       end
 
       # Use callbacks to share common setup or constraints between actions.
-      def set_resource(resource = nil)
-        resource ||= resource_class.find(params[:id])
-        instance_variable_set("@#{resource_name}", resource)
+      def api_set_resource(resource = nil)
+        resource ||= api_resource_class.find(params[:id])
+        instance_variable_set("@#{api_resource_name}", resource)
       end
   end
 end
