@@ -5,12 +5,16 @@ module Api
 	    response.headers['Content-Type'] = "audio/#{@track.mimetype}"
 	    response.headers['Cache-Control'] = 'public, must-revalidate, max-age=0'
 	    response.headers['X-Accel-Buffering'] = 'no'
-	    response.headers['X-Accel-Redirect'] = "/protected#{CGI.escape @track.location}"
+	    response.headers['X-Accel-Redirect'] = "/protected#{encode(@track.location)}"
 
 	    render :nothing => true
     end
 
     private
+
+      def encode (uri)
+        uri.gsub("%","%25")
+      end
 
       def track_params
         params.require(:track).permit(:title)
