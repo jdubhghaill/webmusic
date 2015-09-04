@@ -5,7 +5,7 @@ module Api
 	    response.headers['Content-Type'] = "audio/#{@track.mimetype}"
 	    response.headers['Cache-Control'] = 'public, must-revalidate, max-age=0'
 	    response.headers['X-Accel-Buffering'] = 'no'
-	    response.headers['X-Accel-Redirect'] = "/protected#{@track.location}"
+	    response.headers['X-Accel-Redirect'] = "/protected#{CGI.escape @track.location}"
 
 	    render :nothing => true
     end
