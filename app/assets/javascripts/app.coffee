@@ -248,8 +248,8 @@ app.factory 'ArtistService', ['$resource'
       get: (id) ->
         @service.get({id: id})
 
-      all: ->
-        @service.query()
+      query: (page) ->
+        @service.query({page: page, page_size: 50})
 
       tracks: (id) ->
         @service.tracks({id: id})
@@ -387,20 +387,32 @@ app.controller 'CollectionCtrl', ['$scope', '$interval', '$routeParams', '$locat
 app.controller 'ArtistCtrl', ['$scope', '$routeParams', '$location', 'ArtistService', 'playerService', 'AlbumService'
   ($scope, $routeParams, $location, ArtistService, playerService, AlbumService) ->
     $scope.loading = true
-    $scope.scroll = false
+    $scope.busy = true
     $scope.tracks = null
+    $scope.page = 1
     $scope.artistService = new ArtistService()
     $scope.albumService = new AlbumService()
-    $scope.artistService.all().$promise.then (
+    $scope.artistService.query($scope.page).$promise.then (
       (artists) ->
         $scope.artists = artists
         $scope.loading = false
+        $scope.busy = false
     )
     if $routeParams.id
       $scope.artistService.get($routeParams.id).$promise.then(
         (artist) ->
           $scope.artist = artist
-          $scope.scroll = true
+          $scope.scroll = false
+      )
+
+    $scope.scroll = () ->
+      $scope.busy = true
+      $scope.page += 1
+      $scope.artistService.query($scope.page).$promise.then (
+        (artists) ->
+          Array.prototype.push.apply($scope.artists, artists)
+          if artists.length == 50
+            $scope.busy = false
       )
 
     $scope.openArtist = (index) ->

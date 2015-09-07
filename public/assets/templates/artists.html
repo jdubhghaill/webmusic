@@ -3,7 +3,7 @@
     <div ng-if="artists.length == 0 && !loading">
       <h2>You currently have no music loaded. Check your <a href="/collections">settings</a> and update or add a collection of audio files.</h2>
     </div>
-    <div class="artists" ng-if="artists.length > 0" artist-scroll mu-scroll="scroll">
+    <div class="artists" ng-if="artists.length > 0" artist-scroll infinite-scroll="scroll()" infinite-scroll-disabled="busy">
       <ul id="artistsNav" class="nav nav-pills nav-stacked">
         <li ng-repeat="a in artists" ng-class="{'active': a.id === artist.id,  'minor': a.album_count == 0}"><a href="" ng-click="openArtist($index)"><h4>{{a.name}}</h4></a></li>
       </ul>
@@ -13,5 +13,3 @@
     <div class="loading" ng-show="loading">Loading artists...</div>
   </div>
 </div>
-
-
