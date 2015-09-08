@@ -19,8 +19,10 @@ class Collection < ActiveRecord::Base
     print "\nscan starting\n"
     self.track_count = 0
     self.scanning = true
+    Track.update_all(scanned: false)
     self.save!
     scan_dir(self.path)
+    cleanup()
     self.scanning = false
     self.save!
     end_time = Time.new
@@ -30,6 +32,15 @@ class Collection < ActiveRecord::Base
   end
 
 private
+  # remove any tracks we haven't found and any discs, albums and artists that
+  # have no tracks
+  def cleanup()
+    Track.where(scanned: false).delete_all()
+    Disc.delete_all("id NOT IN (SELECT DISTINCT(disc_id) FROM tracks)")
+    Album.delete_all("id NOT IN (SELECT DISTINCT(album_id) FROM tracks)")
+    Artist.delete_all("id NOT IN (SELECT DISTINCT(artist_id) FROM tracks)")
+  end
+
   def scan_dir(directory)
     albums = {}
     image = nil
@@ -81,8 +92,8 @@ private
 
       album_title = value[:title]
       adisc = value[:discs].keys[0]
-      album_year = value[:discs][adisc][:tracks][0].year
-      album_genre = value[:discs][adisc][:tracks][0].genre
+      album_year = value[:discs][adisc][:tracks][0][:year]
+      album_genre = value[:discs][adisc][:tracks][0][:genre]
       album_artist = nil
       if value[:artists].size > 1
         album_artist = 0
@@ -99,13 +110,30 @@ private
         album.image_type = value[:image_type]
       end
       value[:discs].each do |discnumber, d|
-        disc = Disc.new
+        disc = nil
+        existingDisc = Disc.where("number = :number and album_id = :album_id",
+          {number: discnumber, album_id: album.id}).first
+        if existingDisc != nil
+          disc = existingDisc
+        else
+          disc = Disc.new
+        end
         disc.number = discnumber
         disc.album = album
         disc.save!
-        d[:tracks].each do |track|
+        d[:tracks].each do |t|
+          track = nil
+          existingTrack = Track.where("path = :path", {path: t[:path]}).first
+          if existingTrack != nil
+            track = existingTrack
+          else
+            track = Track.new
+          end
+          print t
+          track.attributes = t
           track.disc = disc
           track.album = album
+          track.scanned = true
           track.save!
         end
       end
@@ -116,22 +144,22 @@ private
   def add_to_albums_hash(track_hash, albums)
     track = track_hash[:track]
     discnum = track_hash[:discnumber]
-    if albums.has_key? track.album_title
-      album = albums[track.album_title]
+    if albums.has_key? track[:album_title]
+      album = albums[track[:album_title]]
       if album[:discs].has_key? discnum
         album[:discs][discnum][:tracks] << track
       else
         album[:discs][discnum] = {:tracks => [track]}
       end
 
-      unless album[:artists].has_key? track.artist.id
-        album[:artists][track.artist.id] = track.artist.name
+      unless album[:artists].has_key? track[:artist].id
+        album[:artists][track[:artist].id] = track[:artist].name
       end
     else
-      albums[track.album_title] = {
-        :title => track.album_title,
+      albums[track[:album_title]] = {
+        :title => track[:album_title],
         :discs => {discnum => {:tracks => [track]}},
-        :artists => {track.artist.id => track.artist.name},
+        :artists => {track[:artist].id => track[:artist].name},
         :image => track_hash[:image],
         :image_type => track_hash[:image_type],
         :album => nil
@@ -148,21 +176,21 @@ private
         unless tag.empty?
           self.track_count += 1
           artist = get_artist(tag.artist.strip)
-          track = Track.new
-          track.location = location
-          track.filename = filename
-          track.artist = artist
-          track.artist_name = artist.name.strip
-          track.album_title = tag.album.strip
-          track.collection = self
-          track.track_number = tag.track
-          track.path = path
-          track.genre = tag.genre.strip
-          track.play_count = 0
-          track.title = tag.title.strip
-          track.year = tag.year.to_i
-          track.mimetype = "ogg"
-          track.length = fileref.audio_properties.length
+          track = {}
+          track[:location] = location
+          track[:filename] = filename
+          track[:artist] = artist
+          track[:artist_name] = artist.name.strip
+          track[:album_title] = tag.album.strip
+          track[:collection] = self
+          track[:track_number] = tag.track
+          track[:path] = path
+          track[:genre] = tag.genre.strip
+          track[:play_count] = 0
+          track[:title] = tag.title.strip
+          track[:year] = tag.year.to_i
+          track[:mimetype] = "ogg"
+          track[:length] = fileref.audio_properties.length
           ogg_tag = fileref.tag.field_list_map
           discnumber = 0
           if tag.contains? "DISCNUMBER"
@@ -177,21 +205,21 @@ private
         self.track_count += 1
         tag = fileref.tag
         artist = get_artist(tag.artist.strip)
-        track = Track.new
-        track.artist = artist
-        track.artist_name = artist.name.strip
-        track.album_title = tag.album.strip
-        track.collection = self
-        track.track_number = tag.track
-        track.path = path
-        track.location = location
-        track.filename = filename
-        track.genre = tag.genre.strip
-        track.play_count = 0
-        track.title = tag.title.strip
-        track.year = tag.year.to_i
-        track.mimetype = "mpeg"
-        track.length = fileref.audio_properties.length
+        track = {}
+        track[:artist] = artist
+        track[:artist_name] = artist.name.strip
+        track[:album_title] = tag.album.strip
+        track[:collection] = self
+        track[:track_number] = tag.track
+        track[:path] = path
+        track[:location] = location
+        track[:filename] = filename
+        track[:genre] = tag.genre.strip
+        track[:play_count] = 0
+        track[:title] = tag.title.strip
+        track[:year] = tag.year.to_i
+        track[:mimetype] = "mpeg"
+        track[:length] = fileref.audio_properties.length
         discnumber = 0
         image = nil
         image_type = nil

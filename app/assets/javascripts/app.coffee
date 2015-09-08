@@ -9,8 +9,6 @@ app = angular.module 'webmusic',
 
 app.config ['$httpProvider'
   ($httpProvider) ->
-    #authToken = $("meta[name=\"csrf-token\"]").attr("content")
-    #$httpProvider.defaults.headers.common["X-CSRF-TOKEN"] = authToken
     $httpProvider.defaults.headers.common["CONTENT_TYPE"] = "application/json"
     $httpProvider.defaults.withCredentials = true;
 ]
@@ -222,7 +220,9 @@ app.factory 'CollectionService', ['$resource', '$q'
   ($resource, $q) ->
     class CollectionService
       constructor: ->
-        @service = $resource('/api/collections/:id', {id: '@id'})
+        @service = $resource('/api/collections/:id', {id: '@id'}, {
+          scan: {method: 'PUT', url: '/api/collections/:id/scan'}
+        })
 
       create: (attrs) ->
         deferred = $q.defer()
@@ -235,6 +235,9 @@ app.factory 'CollectionService', ['$resource', '$q'
 
       all: ->
         @service.query()
+
+      scan: (id) ->
+        @service.scan({id: id})
 ]
 
 app.factory 'ArtistService', ['$resource'
@@ -360,6 +363,21 @@ app.controller 'CollectionCtrl', ['$scope', '$interval', '$routeParams', '$locat
       $scope.collection = $scope.collectionService.get($routeParams.id)
     else
       $scope.collections = $scope.collectionService.all()
+
+    $scope.scan = () ->
+      $scope.collectionService.scan($scope.collection.id).$promise.then(
+        inter = $interval(
+          ->
+            $scope.collectionService.get($scope.collection.id).$promise.then(
+              (c) ->
+                $scope.collection = c
+                if !c.scanning
+                  $interval.cancel(inter)
+                  inter = null
+            )
+          , 2000
+        )
+      )
 
     $scope.create = ->
       $scope.collectionService.create(path: $scope.input_location).then(

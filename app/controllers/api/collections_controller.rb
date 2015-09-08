@@ -31,11 +31,22 @@ module Api
 
     def scan
       @collection = Collection.find(params[:id])
-      track_count = @collection.scan
-      print "track count #{track_count}"
+
+      Thread.abort_on_exception = true
+      Thread.new do
+        print "new scan thread\n"
+        track_count = @collection.scan
+        print "track count #{track_count}\n"
+        @collection.save
+        ActiveRecord::Base.connection.close
+      end
+
       respond_to do |format|
-        format.html { redirect_to @collection, notice: "Found #{track_count} tracks" }
-        format.js {  }
+        if @collection.save
+          format.json { render json: @collection, status: :created}
+        else
+          format.json { render json: @_collection.errors, status: :unprocessable_entity }
+        end
       end
     end
 

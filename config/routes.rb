@@ -7,7 +7,11 @@ Rails.application.routes.draw do
 
   namespace :api, defaults: {format: :json} do
     resources :collection_errors
-    resources :collections
+    resources :collections do
+      member do
+        put 'scan'
+      end
+    end
     resources :artists
     resources :albums do
       get :image

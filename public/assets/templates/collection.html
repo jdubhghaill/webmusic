@@ -4,11 +4,15 @@
     <p>Path: {{collection.path}}</p>
     <p>{{collection.track_count}} tracks</p>
 
+    <span ng-show="collection.scanning">
+      <span class="glyphicon glyphicon-refresh sync-icon"></span> Scanning collection
+    </span>
+
+    <button class="btn" ng-click="scan()">Re-Scan Collection</button>
+
     <h3>Errors</h3>
     <ul>
       <li ng-repeat="error in collection.collection_errors"><a ng-href="/collection-errors/{{error.id}}">{{error.path}}</a></li>
     </ul>
   </div>
 </div>
-
-
