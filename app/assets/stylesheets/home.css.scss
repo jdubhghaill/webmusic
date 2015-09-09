@@ -17,6 +17,42 @@ html, body, .container-fluid, .row {
 }
 
 /* Audio player */
+.media-progress {
+    height: 20px;
+}
+
+.media-bar {
+    background-color: #909090;
+    border-radius: 4px;
+    height: 10px;
+    position: relative;
+    top: 5px;
+}
+
+.media-buffered {
+    background-color: #cfcfcf;
+    border-radius: 4px;
+    height: 10px;
+    position: relative;
+    top: -5px;
+    width: 0%;
+}
+
+.media-played {
+    background-color: #0026c8;
+    border-radius: 4px;
+    height: 10px;
+    position: relative;
+    top: -15px;
+}
+
+.media-current {
+    fill: #0026c8;
+    position: relative;
+    left: 0px;
+    top: -28px;
+}
+
 .player-footer {
   cursor: pointer;
 }

@@ -547,6 +547,14 @@ app.filter "minute", () ->
     min = input / 60
     min.toFixed(2)
 
+app.directive "mediaProgress", () ->
+  restrict: "E"
+  templateUrl: "/assets/templates/mediaprogress.html"
+  controller: ['$scope', 'playerService'
+    ($scope, playerService) ->
+      console.log ""
+  ]
+
 app.directive "audioPlayer", () ->
   restrict: "E"
   templateUrl: "/assets/templates/player.html"
