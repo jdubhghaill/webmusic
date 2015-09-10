@@ -18,7 +18,8 @@ html, body, .container-fluid, .row {
 
 /* Audio player */
 .media-progress {
-    height: 20px;
+    height: 30px;
+    padding-top: 15px;
 }
 
 .media-bar {
@@ -49,8 +50,17 @@ html, body, .container-fluid, .row {
 .media-current {
     fill: #0026c8;
     position: relative;
-    left: 0px;
-    top: -28px;
+    left: 6px;
+    top: -3px;
+    float: right;
+    cursor: grab;
+    transform: scale(0);
+    transform-origin: center center 0;
+    transition-duration: 0.2s;
+}
+
+.track-progress:hover .media-current {
+    transform: scale(1);
 }
 
 .player-footer {
@@ -59,8 +69,9 @@ html, body, .container-fluid, .row {
 
 .track-progress {
   display: inline-block;
-  vertical-align: text-top;
+  vertical-align: top;
   width: 40%;
+  margin-right: 8px;
 }
 
 .paused {
