@@ -552,8 +552,42 @@ app.directive "mediaProgress", () ->
   templateUrl: "/assets/templates/mediaprogress.html"
   controller: ['$scope', 'playerService'
     ($scope, playerService) ->
-      console.log ""
+      $scope.spotTime = 0
   ]
+  link: (scope, element, attrs) ->
+    scope.spot = $(element.find(".media-current")[0])
+    scope.progressbar = $(".media-progress")
+    scope.circle = $(".media-current-spot")
+    scope.$watch(scope.currentTime, (value) ->
+      if value == 0 || value == undefined
+        pos = 0
+      else
+        pos = (value / scope.totalTime) * $(".media-bar").width()
+      console.log pos
+      $(".media-current").css(left: pos)
+
+      if !$(".media-progress").hasClass("dragging")
+        time = (scope.currentTime / 60).toFixed(2)
+        $(".progress-tooltip").text(time)
+    )
+
+    scope.spot.draggable
+      axis: "x"
+      containment: $(".media-progress-container")
+      start: (event, ui) ->
+        $(".media-progress").addClass "dragging"
+        return
+      stop: (event, ui) ->
+        $(".media-progress").removeClass "dragging"
+        return
+      drag: (event, ui) ->
+        percent = ((scope.circle.position().left - scope.progressbar.position().left) / scope.progressbar.width() ) * 100
+        if percent > 100
+          percent = 100
+        time = (((scope.totalTime / 100) * percent) / 60).toFixed(2)
+        $(".progress-tooltip").text(time)
+        return
+
 
 app.directive "audioPlayer", () ->
   restrict: "E"

@@ -1,11 +1,16 @@
-<div class="media-progress" role="progressbar" aria-valuenow="{{currentTime}}" aria-valuemin="0" aria-valuemax="{{totalTime}}">
-  <div class="media-bar">
+<div class="media-progress-container">
+  <div class="media-progress" role="progressbar" aria-valuenow="{{currentTime}}" aria-valuemin="0" aria-valuemax="{{totalTime}}">
+    <div class="media-bar">
+    </div>
+    <div class="media-buffered">
+    </div>
+    <div class="media-played" ng-style="progress()">
+    </div>
   </div>
-  <div class="media-buffered">
-  </div>
-  <div class="media-played" ng-style="progress()">
-    <svg height="16" width="16" class="media-current">
+  <span class="media-current">
+    <svg height="16" width="16" class="media-current-spot">
       <circle cx="8" cy="8" r="8" />
     </svg>
-  </div>
+    <span class="progress-tooltip">00:00</span>
+  </span>
 </div>

@@ -8,6 +8,7 @@
     "bootstrap-sass-official": "latest",
     "angular-bootstrap": "latest",
     "ngInfiniteScroll": "latest",
-    "angular-devise": "latest"
+    "angular-devise": "latest",
+    "jquery-ui": "latest"
   }
 }
