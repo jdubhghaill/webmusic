@@ -558,7 +558,9 @@ app.directive "mediaProgress", () ->
     scope.spot = $(element.find(".media-current")[0])
     scope.progressbar = $(".media-progress")
     scope.circle = $(".media-current-spot")
-    scope.$watch(scope.currentTime, (value) ->
+    mediaElement = $('.audio')
+    scope.updateProgress = () ->
+      value = $scope.audio[0].currentTime
       if value == 0 || value == undefined
         pos = 0
       else
@@ -569,7 +571,9 @@ app.directive "mediaProgress", () ->
       if !$(".media-progress").hasClass("dragging")
         time = (scope.currentTime / 60).toFixed(2)
         $(".progress-tooltip").text(time)
-    )
+      $scope.$apply()
+      
+    mediaElement.bind("timeupdate", scope.updateProgress)
 
     scope.spot.draggable
       axis: "x"
