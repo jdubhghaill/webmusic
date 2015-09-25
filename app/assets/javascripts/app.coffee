@@ -560,18 +560,16 @@ app.directive "mediaProgress", () ->
     scope.circle = $(".media-current-spot")
     mediaElement = $('.audio')
     scope.updateProgress = () ->
-      value = scope.audio[0].currentTime
-      if value == 0 || value == undefined
-        pos = 0
-      else
-        pos = (value / scope.totalTime) * $(".media-bar").width()
-      console.log pos
-      $(".media-current").css(left: pos)
-
       if !$(".media-progress").hasClass("dragging")
+        value = scope.audio[0].currentTime
+        if value == 0 || value == undefined
+          pos = 0
+        else
+          pos = (value / scope.totalTime) * $(".media-bar").width()
+          $(".media-current").css(left: pos)
         time = (scope.currentTime / 60).toFixed(2)
         $(".progress-tooltip").text(time)
-      scope.$apply()
+        scope.$apply()
 
     mediaElement.bind("timeupdate", scope.updateProgress)
 
