@@ -581,15 +581,21 @@ app.directive "mediaProgress", () ->
         return
       stop: (event, ui) ->
         $(".media-progress").removeClass "dragging"
+        percent = scope.progressPercent()
+        time = ((scope.totalTime / 100) * percent) / 60
+        scope.audio[0].currentTime = time
         return
       drag: (event, ui) ->
-        percent = ((scope.circle.position().left - scope.progressbar.position().left) / scope.progressbar.width() ) * 100
-        if percent > 100
-          percent = 100
+        percent = scope.progressPercent()
         time = (((scope.totalTime / 100) * percent) / 60).toFixed(2)
         $(".progress-tooltip").text(time)
         return
 
+    scope.progressPercent = () ->
+      percent = ((scope.circle.position().left - scope.progressbar.position().left) / scope.progressbar.width() ) * 100
+      if percent > 100
+        percent = 100
+      percent
 
 app.directive "audioPlayer", () ->
   restrict: "E"
