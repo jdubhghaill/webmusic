@@ -582,7 +582,7 @@ app.directive "mediaProgress", () ->
       stop: (event, ui) ->
         $(".media-progress").removeClass "dragging"
         percent = scope.progressPercent()
-        time = ((scope.totalTime / 100) * percent) / 60
+        time = ((scope.totalTime / 100) * percent)
         scope.audio[0].currentTime = time
         return
       drag: (event, ui) ->
