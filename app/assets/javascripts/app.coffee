@@ -553,6 +553,12 @@ app.directive "mediaProgress", () ->
   controller: ['$scope', 'playerService'
     ($scope, playerService) ->
       $scope.spotTime = 0
+      $scope.setPosition = (event) ->
+        console.log "-"
+        console.log event.pageX
+        console.log event.offsetX
+        console.log event.clientX
+        console.log event.screenX
   ]
   link: (scope, element, attrs) ->
     scope.spot = $(element.find(".media-current")[0])
@@ -582,7 +588,7 @@ app.directive "mediaProgress", () ->
       stop: (event, ui) ->
         $(".media-progress").removeClass "dragging"
         percent = scope.progressPercent()
-        time = ((scope.totalTime / 100) * percent)
+        time = (scope.totalTime / 100) * percent
         scope.audio[0].currentTime = time
         return
       drag: (event, ui) ->
