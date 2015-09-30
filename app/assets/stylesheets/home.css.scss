@@ -59,6 +59,7 @@ html, body, .container-fluid, .row {
   transform: scale(0);
   transform-origin: center center 0;
   transition-duration: 0.2s;
+  cursor: grab;
 }
 
 .media-progress.dragging .media-current-spot {
