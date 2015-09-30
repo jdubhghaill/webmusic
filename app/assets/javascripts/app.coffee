@@ -555,10 +555,8 @@ app.directive "mediaProgress", () ->
       $scope.spotTime = 0
       $scope.setPosition = (event) ->
         percent = event.offsetX / $scope.progressbar.width() * 100
-        console.log percent
         time = ($scope.totalTime / 100) * percent
         $scope.audio[0].currentTime = time
-
   ]
   link: (scope, element, attrs) ->
     scope.spot = $(element.find(".media-current")[0])
