@@ -29,6 +29,7 @@
       <h5 ng-show="playlist.length > 0">
         <span class="title">{{playlist[currentTrack].title}}</span><br/>
         <small class="artist">{{playlist[currentTrack].artist.name}}</small>
+        <small class="count">{{playlist.length - currentTrack - 1}} tracks queued</small>
       </h5>
     </span>
   </span>

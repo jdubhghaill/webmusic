@@ -49,9 +49,6 @@ html, body, .container-fluid, .row {
   top: -15px;
 }
 
-.media-current {
-}
-
 .media-current-spot {
   fill: #0026c8;
   position: relative;
@@ -60,6 +57,10 @@ html, body, .container-fluid, .row {
   transform-origin: center center 0;
   transition-duration: 0.2s;
   cursor: grab;
+}
+
+.media-progress.dragging .media-current-spot {
+  cursor: grabbing;
 }
 
 .media-progress.dragging .media-current-spot {
